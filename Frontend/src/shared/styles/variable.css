@@ -1,0 +1,12 @@
+:root {
+  --color-bg: #ffffff;
+
+  --color-primary: #2563eb; /* основной синий */
+  --color-primary-dark: #1d4ed8;
+
+  --color-text: #111827;
+  --color-gray: #6b7280;
+
+  --color-card: #f9fafb;
+  --color-border: #e5e7eb;
+}

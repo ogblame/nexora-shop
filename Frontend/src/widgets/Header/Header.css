@@ -1,0 +1,49 @@
+.header {
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  padding: 20px;
+}
+
+.header-logo {
+  font-size: 28px;
+  font-weight: bold;
+  color: #2563eb;
+}
+
+.header-list {
+  display: flex;
+  gap: 50px;
+}
+
+.header-menu {
+  display: flex;
+  align-items: center;
+}
+
+.header-link {
+  font-size: 16px;
+  color: #6b7280;
+  text-decoration: none;
+}
+
+.header-link:hover {
+  color: #2563eb;
+}
+
+.header-actions {
+  display: flex;
+  gap: 20px;
+}
+
+.header-button {
+  background-color: #2563eb;
+  color: white;
+  border-radius: 12px;
+  border: none;
+  padding: 10px;
+  cursor: pointer;
+}
