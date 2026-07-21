@@ -47,3 +47,8 @@
   padding: 10px;
   cursor: pointer;
 }
+
+.active {
+  cursor: default;
+  color: #2563eb;
+}

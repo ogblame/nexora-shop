@@ -1,4 +1,5 @@
 import "./Header.css";
+import CustomLink from "../../shared/UI/CustomLink.tsx";
 
 export default function Header() {
   return (
@@ -9,14 +10,19 @@ export default function Header() {
           <nav className="header-menu">
             <ul className="header-list">
               <li className="header-item">
-                <a className="header-link" href="">
-                  Каталог
-                </a>
+                <CustomLink className="header-link" to="/">
+                  Главная
+                </CustomLink>
               </li>
               <li className="header-item">
-                <a className="header-link" href="">
+                <CustomLink className="header-link" to="/catalog">
+                  Каталог
+                </CustomLink>
+              </li>
+              <li className="header-item">
+                <CustomLink className="header-link" to="/about">
                   О нас
-                </a>
+                </CustomLink>
               </li>
             </ul>
           </nav>
