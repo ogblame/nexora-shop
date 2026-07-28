@@ -1,7 +1,7 @@
 import "./Header.css";
 import CustomLink from "../../shared/UI/CustomLink.tsx";
 
-export default function Header() {
+export default function AppHeader() {
   return (
     <header className="header">
       <div className="container">

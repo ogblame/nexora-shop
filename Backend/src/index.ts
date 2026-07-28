@@ -2,9 +2,18 @@ import express from "express";
 import "dotenv/config";
 import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient } from "./generated/prisma/client";
+import cors from "cors";
 
 const app = express();
 app.use(express.json());
+app.use(
+  cors({
+    origin: "http://localhost:5173",
+  }),
+);
+
+app.use(express.json());
+
 const PORT = 3000;
 
 const adapter = new PrismaPg({
@@ -32,14 +41,12 @@ app.get("/api/products/:id", async (request, response) => {
     },
   });
 
-  response.json(product);
-
   if (!product) {
     response.status(404);
     response.send("Продукт не найден =(");
+  } else {
+    response.json(product);
   }
-
-  response.json(product);
 });
 
 app.post("/api/products/", async (req, res) => {

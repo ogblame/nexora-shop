@@ -1,4 +1,4 @@
-import MainLayout from "./MainLayout/MainLayout";
+import AppLayout from "./AppLayout/AppLayout";
 // import { Routes, Route} from "react-router-dom";
 // import AboutPage from "../pages/About/AboutPage.tsx";
 // import NotFoundPage from "../pages/NotFoundPage/NotFoundPage.tsx";
@@ -8,7 +8,7 @@ import MainLayout from "./MainLayout/MainLayout";
 function App() {
   return (
     <>
-      <MainLayout />
+      <AppLayout />
     </>
   );
 }
