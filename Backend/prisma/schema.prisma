@@ -12,6 +12,8 @@ datasource db {
   provider = "postgresql"
 }
 
+
+
 model Product {
   id Int @id @default(autoincrement())
   name String
@@ -19,4 +21,20 @@ model Product {
   quantity Int
   price Int
 
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+model User {
+  id Int @id @default(autoincrement())
+  fullName String
+  email String @unique
+  passwordHash String
+  deliveryAddress String?
+  phone String?
+  role Role @default(USER)
+  createdAt DateTime @default(now())
 }

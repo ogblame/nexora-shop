@@ -27,7 +27,7 @@ export default function AppHeader() {
             </ul>
           </nav>
           <div className="header-actions">
-            <button className="header-button">Авторизация</button>
+            <button className="header-button">Авторизация / Регистрация</button>
             <button className="header-button">Корзина</button>
           </div>
         </div>

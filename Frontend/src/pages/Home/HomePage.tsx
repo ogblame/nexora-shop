@@ -1,23 +1,30 @@
 import React, { useEffect, useState } from "react";
+import ProductCard from "../../entities/ProductCard/ProductCard";
+import "./HomePage.css";
+import { fetchProducts } from "../../shared/api/api.js";
 
 export default function HomePage() {
-  const [products, setProducts] = useState();
+  const [products, setProducts] = useState([]);
 
   useEffect(() => {
-    async function fetchProducts() {
-      const response = await fetch("http://localhost:3000/api/products");
-      const data = await response.json();
-      setProducts(data);
-    }
-    fetchProducts();
+    fetchProducts()
+      .then((dataProducts) => setProducts(dataProducts))
+      .catch((err) => console.log(err));
   }, []);
 
   return (
     <div>
       Привет, ты на главной странице!
-      {/* {products.map((product) => (
-        <li>{product.name}</li>
-      ))} */}
+      <div className="product__list">
+        {products.length !== 0
+          ? products.map((product) => (
+              <ProductCard
+                name={product.name}
+                description={product.description}
+              />
+            ))
+          : "Товары не найдены =("}
+      </div>
     </div>
   );
 }

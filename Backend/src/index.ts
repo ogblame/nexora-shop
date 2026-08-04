@@ -1,8 +1,9 @@
 import express from "express";
 import "dotenv/config";
-import { PrismaPg } from "@prisma/adapter-pg";
-import { PrismaClient } from "./generated/prisma/client";
+
 import cors from "cors";
+import authRouter from "./routes/auth.routes";
+import { prisma } from "./prisma.ts";
 
 const app = express();
 app.use(express.json());
@@ -12,16 +13,9 @@ app.use(
   }),
 );
 
-app.use(express.json());
+app.use("/auth", authRouter);
 
 const PORT = 3000;
-
-const adapter = new PrismaPg({
-  connectionString: process.env.DATABASE_URL!,
-});
-const prisma = new PrismaClient({
-  adapter,
-});
 
 app.get("/api/products", async (req, response) => {
   try {
