@@ -1,6 +1,7 @@
-import e, { Router } from "express";
+import { Router } from "express";
 import { prisma } from "../prisma";
 import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
 
 const router = Router();
 
@@ -48,7 +49,17 @@ router.post("/login", async (req, res) => {
   if (user) {
     const isMatch = await bcrypt.compare(password, user.passwordHash);
     if (isMatch) {
-      return res.json({ message: "Вы успешно авторизованы!" });
+      const token = jwt.sign(
+        {
+          id: user.id,
+          email: user.email,
+          fullName: user.fullName,
+          role: user.role,
+        },
+        process.env.JWT_SECRET!,
+        { expiresIn: "1d" },
+      );
+      return res.json({ token: token });
     } else {
       res.json({ message: "Неверный пароль!" });
     }
@@ -56,3 +67,22 @@ router.post("/login", async (req, res) => {
 });
 
 export default router;
+
+router.get("/me", (req, res) => {
+  const { authorization } = req.headers;
+  const token = authorization?.split(" ")[1];
+  try {
+    if (!token) {
+      return res.status(401).json({
+        message: "Token not found",
+      });
+    }
+    const payload = jwt.verify(token, process.env.JWT_SECRET!);
+    res.json({
+      user: payload,
+    });
+  } catch (err) {
+    console.log(err);
+    res.status(401).json({ message: "Unauthorized" });
+  }
+});

@@ -1,7 +1,52 @@
 import "./Header.css";
 import CustomLink from "../../shared/UI/CustomLink.tsx";
+import { useContext } from "react";
+import { AuthContext } from "../../context/AuthContext.tsx";
+import {
+  DownOutlined,
+  LogoutOutlined,
+  ProfileOutlined,
+  SettingOutlined,
+  ShoppingCartOutlined,
+} from "@ant-design/icons";
+import type { MenuProps } from "antd";
+import { Dropdown, Space, Avatar } from "antd";
+import { useNavigate } from "react-router-dom";
 
 export default function AppHeader() {
+  const auth = useContext(AuthContext);
+  const { user, logout } = auth;
+  const navigate = useNavigate();
+
+  const items: MenuProps["items"] = [
+    {
+      key: "1",
+      label: "Мой аккаунт",
+      disabled: true,
+    },
+    {
+      type: "divider",
+    },
+    {
+      key: "2",
+      label: "Профиль",
+      icon: <ProfileOutlined />,
+      extra: "⌘P",
+    },
+    {
+      key: "3",
+      label: "Настройки",
+      icon: <SettingOutlined />,
+      extra: "⌘S",
+    },
+    {
+      key: "4",
+      label: "Выйти",
+      icon: <LogoutOutlined />,
+      extra: "⌘L",
+      onClick: logout,
+    },
+  ];
   return (
     <header className="header">
       <div className="container">
@@ -27,8 +72,24 @@ export default function AppHeader() {
             </ul>
           </nav>
           <div className="header-actions">
-            <button className="header-button">Авторизация / Регистрация</button>
-            <button className="header-button">Корзина</button>
+            {!user ? (
+              <button
+                onClick={() => navigate("/login")}
+                className="header-button"
+              >
+                Авторизация / Регистрация
+              </button>
+            ) : (
+              <Dropdown menu={{ items }}>
+                <a onClick={(e) => e.preventDefault()}>
+                  <Space>
+                    <Avatar>{user.fullName}</Avatar>
+                  </Space>
+                </a>
+              </Dropdown>
+            )}
+
+            <ShoppingCartOutlined style={{ fontSize: "22px" }} />
           </div>
         </div>
       </div>

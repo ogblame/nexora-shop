@@ -4,6 +4,7 @@ import "dotenv/config";
 import cors from "cors";
 import authRouter from "./routes/auth.routes";
 import { prisma } from "./prisma.ts";
+import userRouter from "./routes/user.routes.ts";
 
 const app = express();
 app.use(express.json());
@@ -13,6 +14,7 @@ app.use(
   }),
 );
 
+app.use("/user", userRouter);
 app.use("/auth", authRouter);
 
 const PORT = 3000;

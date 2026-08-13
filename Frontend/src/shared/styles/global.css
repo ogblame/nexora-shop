@@ -1,5 +1,6 @@
 @import "./reset.css";
 @import "./variable.css";
+@import "tailwindcss";
 
 .container {
   max-width: 1200px;

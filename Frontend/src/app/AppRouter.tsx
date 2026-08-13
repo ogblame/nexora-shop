@@ -5,6 +5,8 @@ import HomePage from "../pages/Home/HomePage.tsx";
 import CatalogPage from "../pages/Catalog/CatalogPage.tsx";
 import MainLayout from "./AppLayout/AppLayout.tsx";
 import AdminPage from "../pages/Admin/AdminPage.tsx";
+import LoginPage from "../pages/Auth/LoginPage.tsx";
+import RegisterPage from "../pages/Auth/RegisterPage.tsx";
 
 export const router = createBrowserRouter([
   {
@@ -17,5 +19,7 @@ export const router = createBrowserRouter([
       { path: "admin", element: <AdminPage /> },
     ],
   },
+  { path: "/login", element: <LoginPage /> },
+  { path: "/register", element: <RegisterPage /> },
   { path: "*", element: <NotFoundPage /> },
 ]);
