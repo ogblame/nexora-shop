@@ -2,14 +2,15 @@ import React, { useEffect, useState } from "react";
 import ProductCard from "../../entities/ProductCard/ProductCard";
 import "./HomePage.css";
 import { fetchProducts } from "../../shared/api/api.js";
+import type { Product } from "../../entities/Product/model/types.js";
 
 export default function HomePage() {
-  const [products, setProducts] = useState([]);
+  const [products, setProducts] = useState<Product[]>([]);
 
   useEffect(() => {
     fetchProducts()
-      .then((dataProducts) => setProducts(dataProducts))
-      .catch((err) => console.log(err));
+      .then((dataProducts: Product[]) => setProducts(dataProducts))
+      .catch((err: Error) => console.log(err));
   }, []);
 
   return (
@@ -17,10 +18,12 @@ export default function HomePage() {
       Привет, ты на главной странице!
       <div className="product__list">
         {products.length !== 0
-          ? products.map((product) => (
+          ? products.map((product: Product) => (
               <ProductCard
+                id={product.id}
                 name={product.name}
-                description={product.description}
+                price={product.price}
+                imageUrl={product.imageUrl}
               />
             ))
           : "Товары не найдены =("}

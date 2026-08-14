@@ -20,22 +20,31 @@ export default function LoginPage() {
   const { setToken } = auth;
   const navigate = useNavigate();
   const onFinish: FormProps<FieldType>["onFinish"] = async (values) => {
-    const response = await fetch("http://localhost:3000/auth/login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        email: values.email,
-        password: values.password,
-      }),
-    });
+    try {
+      const response = await fetch("http://localhost:3000/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: values.email,
+          password: values.password,
+        }),
+      });
 
-    const data = await response.json();
-    localStorage.setItem("token", data.token);
-    setToken(data.token);
-    navigate("/");
-    message.success("Вы успешно вошли!");
+      if (!response.ok) throw new Error("Запрос неверный");
+
+      const data = await response.json();
+      if (!data.token) {
+        message.error("Нет такого");
+      }
+      localStorage.setItem("token", data.token);
+      setToken(data.token);
+      navigate("/");
+      message.success("Вы успешно вошли!");
+    } catch (err) {
+      message.error("Ошибка в авторизации");
+    }
   };
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">

@@ -9,92 +9,112 @@ import {
   Space,
   Table,
   Tag,
+  message,
+  Upload,
 } from "antd";
 import "./AdminPage.css";
+import type { UploadProps } from "antd";
+import { UploadOutlined } from "@ant-design/icons";
+import {
+  fetchProducts,
+  fetchAddProduct,
+  fetchUpdatedProduct,
+  fetchDeleteProduct,
+} from "../../shared/api/api.js";
+import type {
+  CreateProduct,
+  Product,
+  UpdateProduct,
+} from "../../entities/Product/model/types.ts";
 
+type ProductFormValues = CreateProduct & {
+  upload?: {
+    fileList?: {
+      originFileObj?: File;
+    }[];
+  };
+};
 const { Column, ColumnGroup } = Table;
+
+type formMode = "create" | "edit" | null;
 
 export default function AdminPage() {
   const [form] = Form.useForm();
-  const [products, setProducts] = useState([]);
-  const [formMode, setIsFormMode] = useState(null);
-  const [edditingProduct, setEdditingProduct] = useState();
+  const [products, setProducts] = useState<Product[]>([]);
+  const [formMode, setIsFormMode] = useState<formMode>(null);
+  const [edditingProduct, setEdditingProduct] = useState<Product | null>(null);
 
   useEffect(() => {
-    fetch("http://localhost:3000/api/products")
-      .then((res) => res.json())
-      .then((data) => setProducts(data));
+    fetchProducts()
+      .then((dataProducts: Product[]) => setProducts(dataProducts))
+      .catch((err: unknown) => {
+        if (err instanceof Error) {
+          console.log(err.message);
+        }
+        message.error("Не удалось загрузить продукты");
+      });
   }, []);
 
-  const addProduct = async (values) => {
+  const addProduct = async (values: CreateProduct, image?: File) => {
     try {
-      const response = await fetch("http://localhost:3000/api/products", {
-        headers: {
-          "Content-Type": "application/json",
-        },
-        method: "POST",
-        body: JSON.stringify(values),
-      });
-      if (!response.ok) {
-        throw new Error("Не удалось добавить товар");
-      }
-      const newProduct = await response.json();
+      const newProduct = await fetchAddProduct(values, image);
+
       setProducts((prev) => [...prev, newProduct]);
+
       form.resetFields();
-      setIsAdding(false);
+      setEdditingProduct(null);
+      message.success("Товар успешно создан!");
+    } catch (err) {
+      message.error(`Ошибка при создании товара: ${err}`);
+    }
+  };
+
+  const updateProduct = async (
+    productId: number,
+    updatedProduct: UpdateProduct,
+  ) => {
+    try {
+      const updateProduct = await fetchUpdatedProduct(
+        productId,
+        updatedProduct,
+      );
+
+      setProducts((prev) =>
+        prev.map((product) =>
+          product.id === productId ? updateProduct : product,
+        ),
+      );
+      setIsFormMode(null);
+      message.success("Товар успешно обновлен!");
     } catch (err) {
       console.log(err);
     }
   };
 
-  const updateProduct = async (id) => {
+  const deleteProduct = async (productId: number) => {
     try {
-      const response = await fetch(`http://localhost:3000/api/products/${id}`, {
-        headers: {
-          "Content-Type": "application/json",
-        },
-        method: "PUTCH",
-      });
-      const updateProduct = response.json();
-      if (!response.ok) {
-        throw new Error("Не удалось изменить товар");
-      }
-      setProducts((prev) => prev.splice(id, 1, updateProduct));
+      await fetchDeleteProduct(productId);
+      setProducts((prev) => prev.filter((product) => product.id !== productId));
+      message.success("Товар успешно удален!");
     } catch (err) {
-      console.log(err);
+      message.error(`Не удалось удалить продукт по причине: ${err}`);
     }
   };
 
-  const deleteProduct = async (id) => {
-    try {
-      const response = await fetch(`http://localhost:3000/api/products/${id}`, {
-        headers: {
-          "Content-Type": "application/json",
-        },
-        method: "DELETE",
-      });
-      if (!response.ok) {
-        throw new Error("Не удалось удалить товар");
-      }
-      setProducts((prev) => prev.filter((product) => product.id !== id));
-    } catch (err) {
-      console.log(err);
+  const submitForm = (values: ProductFormValues) => {
+    const image = values.upload?.fileList?.[0]?.originFileObj;
+    if (formMode === "create") {
+      addProduct(values as CreateProduct, image);
+    }
+
+    if (formMode === "edit" && edditingProduct) {
+      updateProduct(edditingProduct.id, values as UpdateProduct);
     }
   };
 
   const cancel = () => {
     setIsFormMode(null);
     form.resetFields();
-  };
-
-  const submitForm = (values) => {
-    if (formMode === "create") {
-      addProduct(values);
-    }
-
-    if (formMode === "edit") {
-      updateProduct(values);
-    }
   };
 
   return (
@@ -122,7 +142,7 @@ export default function AdminPage() {
               <a
                 onClick={() => {
                   setIsFormMode("edit");
-                  setEdditingProduct(record);
+                  setEdditingProduct(record as Product);
                   form.setFieldsValue(record);
                 }}
               >
@@ -163,15 +183,11 @@ export default function AdminPage() {
             <InputNumber />
           </Form.Item>
 
-          {/* <Form.Item label="Категории" name="category">
-        <Select
-          options={[
-            { label: "Designer", value: "designer" },
-            { label: "Developer", value: "developer" },
-            { label: "Product Manager", value: "product-manager" },
-          ]}
-        />
-      </Form.Item> */}
+          <Form.Item name="upload" label="Фото товара">
+            <Upload beforeUpload={() => false} maxCount={1}>
+              <Button icon={<UploadOutlined />}>Добавить</Button>
+            </Upload>
+          </Form.Item>
 
           <Form.Item label={null}>
             <Flex gap="small">

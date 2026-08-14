@@ -21,7 +21,7 @@ export default function AppHeader() {
   const items: MenuProps["items"] = [
     {
       key: "1",
-      label: "Мой аккаунт",
+      label: user?.fullName,
       disabled: true,
     },
     {
@@ -83,7 +83,7 @@ export default function AppHeader() {
               <Dropdown menu={{ items }}>
                 <a onClick={(e) => e.preventDefault()}>
                   <Space>
-                    <Avatar>{user.fullName}</Avatar>
+                    <Avatar>{user.fullName[0]}</Avatar>
                   </Space>
                 </a>
               </Dropdown>

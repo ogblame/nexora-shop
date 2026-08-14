@@ -5,6 +5,7 @@ import cors from "cors";
 import authRouter from "./routes/auth.routes";
 import { prisma } from "./prisma.ts";
 import userRouter from "./routes/user.routes.ts";
+import { upload } from "./middleware/upload.ts";
 
 const app = express();
 app.use(express.json());
@@ -16,6 +17,8 @@ app.use(
 
 app.use("/user", userRouter);
 app.use("/auth", authRouter);
+
+app.use("/uploads", express.static("uploads"));
 
 const PORT = 3000;
 
@@ -45,14 +48,16 @@ app.get("/api/products/:id", async (request, response) => {
   }
 });
 
-app.post("/api/products/", async (req, res) => {
+app.post("/api/products/", upload.single("image"), async (req, res) => {
   const { name, price, description, quantity } = req.body;
+  console.log("FILE:", req.file);
   const product = await prisma.product.create({
     data: {
       name,
-      price,
+      price: Number(price),
       description,
-      quantity,
+      quantity: Number(quantity),
+      imageUrl: req.file ? `/uploads/${req.file.filename}` : null,
     },
   });
   res.status(201).json(product);

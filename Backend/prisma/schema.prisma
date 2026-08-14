@@ -20,6 +20,7 @@ model Product {
   description String
   quantity Int
   price Int
+  imageUrl String?
 
 }
 
