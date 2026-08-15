@@ -10,13 +10,17 @@ import {
   ShoppingCartOutlined,
 } from "@ant-design/icons";
 import type { MenuProps } from "antd";
-import { Dropdown, Space, Avatar } from "antd";
-import { useNavigate } from "react-router-dom";
+import { Dropdown, Space, Avatar, Button, Badge } from "antd";
+import { Link, useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
+import type { RootState } from "../../app/store.ts";
 
 export default function AppHeader() {
   const auth = useContext(AuthContext);
   const { user, logout } = auth;
   const navigate = useNavigate();
+
+  const shoppingCartItems = useSelector((state: RootState) => state.cart.items);
 
   const items: MenuProps["items"] = [
     {
@@ -51,7 +55,9 @@ export default function AppHeader() {
     <header className="header">
       <div className="container">
         <div className="header-content">
-          <h1 className="header-logo">Nexora</h1>
+          <Link className="header-logo" to="/">
+            Nexora
+          </Link>
           <nav className="header-menu">
             <ul className="header-list">
               <li className="header-item">
@@ -71,14 +77,14 @@ export default function AppHeader() {
               </li>
             </ul>
           </nav>
-          <div className="header-actions">
+          <div className="header-actions flex items-center">
             {!user ? (
-              <button
+              <Button
                 onClick={() => navigate("/login")}
                 className="header-button"
               >
                 Авторизация / Регистрация
-              </button>
+              </Button>
             ) : (
               <Dropdown menu={{ items }}>
                 <a onClick={(e) => e.preventDefault()}>
@@ -88,8 +94,17 @@ export default function AppHeader() {
                 </a>
               </Dropdown>
             )}
-
-            <ShoppingCartOutlined style={{ fontSize: "22px" }} />
+            <Badge count={shoppingCartItems.length}>
+              <div
+                onClick={() => navigate("/shoppingcart")}
+                className="flex h-10 w-10 cursor-pointer items-center justify-center rounded-full transition-color"
+              >
+                <ShoppingCartOutlined
+                  className=""
+                  style={{ fontSize: "28px" }}
+                />
+              </div>
+            </Badge>
           </div>
         </div>
       </div>

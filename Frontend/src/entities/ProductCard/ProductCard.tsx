@@ -1,6 +1,5 @@
 import React from "react";
 import "./ProductCard.css";
-import { ShoppingCartOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import { Button } from "antd";
 import type { Product } from "../Product/model/types";

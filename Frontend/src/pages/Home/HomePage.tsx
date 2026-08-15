@@ -15,8 +15,7 @@ export default function HomePage() {
 
   return (
     <div>
-      Привет, ты на главной странице!
-      <div className="product__list">
+      <div className="product__list mt-5">
         {products.length !== 0
           ? products.map((product: Product) => (
               <ProductCard
