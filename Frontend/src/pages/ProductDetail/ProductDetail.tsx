@@ -46,6 +46,7 @@ export default function ProductDetail() {
           <p className="text-2xl">
             Осталось на складе: {product.quantity} позиции
           </p>
+
           <Button
             className="mt-5 w-50"
             onClick={() => dispatch(addToCart(product))}

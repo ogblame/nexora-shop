@@ -8,12 +8,14 @@ import { useNavigate } from "react-router-dom";
 export default function ShoppingCartPage() {
   const items = useSelector((state: RootState) => state.cart.items);
   const navigate = useNavigate();
+
   return (
     <>
       <div className="flex justify-between items-center gap-5 mt-5">
         <Button onClick={() => navigate(-1)}> Назад </Button>
         <h2 className="text-2xl ">
-          Продуктов в корзине: {items.length} позиции.
+          Продуктов в корзине:{" "}
+          {items.reduce((acc, item) => acc + item.count, 0)} позиции.
         </h2>
         <Button> Оформить заказ</Button>
       </div>

@@ -19,6 +19,7 @@ export default function AppHeader() {
   const auth = useContext(AuthContext);
   const { user, logout } = auth;
   const navigate = useNavigate();
+  console.log(user.role);
 
   const shoppingCartItems = useSelector((state: RootState) => state.cart.items);
 
@@ -78,6 +79,7 @@ export default function AppHeader() {
             </ul>
           </nav>
           <div className="header-actions flex items-center">
+            {/* {user.role === "ADMIN" && <Button>Админ панель</Button>} */}
             {!user ? (
               <Button
                 onClick={() => navigate("/login")}
@@ -94,7 +96,12 @@ export default function AppHeader() {
                 </a>
               </Dropdown>
             )}
-            <Badge count={shoppingCartItems.length}>
+            <Badge
+              count={shoppingCartItems.reduce(
+                (acc, item) => acc + item.count,
+                0,
+              )}
+            >
               <div
                 onClick={() => navigate("/shoppingcart")}
                 className="flex h-10 w-10 cursor-pointer items-center justify-center rounded-full transition-color"

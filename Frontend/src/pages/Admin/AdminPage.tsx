@@ -26,6 +26,7 @@ import type {
   Product,
   UpdateProduct,
 } from "../../entities/Product/model/types.ts";
+import { Outlet, useLocation, useNavigate } from "react-router-dom";
 
 type ProductFormValues = CreateProduct & {
   upload?: {
@@ -43,6 +44,9 @@ export default function AdminPage() {
   const [products, setProducts] = useState<Product[]>([]);
   const [formMode, setIsFormMode] = useState<formMode>(null);
   const [edditingProduct, setEdditingProduct] = useState<Product | null>(null);
+  const location = useLocation();
+  const navigate = useNavigate();
+  console.log(location);
 
   useEffect(() => {
     fetchProducts()
@@ -119,15 +123,28 @@ export default function AdminPage() {
 
   return (
     <div className="admin">
-      {!formMode && (
-        <Button
-          onClick={() => setIsFormMode("create")}
-          type="primary"
-          htmlType="submit"
-        >
-          Добавить продукт
-        </Button>
-      )}
+      <div className="flex gap-5">
+        {!formMode && (
+          <Button
+            onClick={() => setIsFormMode("create")}
+            type="primary"
+            htmlType="submit"
+          >
+            Добавить продукт
+          </Button>
+        )}
+        {location.pathname === "/admin/users" ? (
+          <Button onClick={() => navigate("/admin")}>
+            Закрыть список пользователей
+          </Button>
+        ) : (
+          <Button type="primary" onClick={() => navigate("/admin/users")}>
+            Cписок пользователей
+          </Button>
+        )}
+      </div>
+
+      <Outlet />
 
       <Table className="products__list" dataSource={products}>
         <Column title="Название товара" dataIndex="name" key="name" />

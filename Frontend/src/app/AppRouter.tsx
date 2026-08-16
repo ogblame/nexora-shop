@@ -9,6 +9,7 @@ import LoginPage from "../pages/Auth/LoginPage.tsx";
 import RegisterPage from "../pages/Auth/RegisterPage.tsx";
 import ProductDetail from "../pages/ProductDetail/ProductDetail.tsx";
 import ShoppingCartPage from "../pages/ShoppingCart/ShoppingCartPage.tsx";
+import AdminUsersPage from "../pages/Admin/AdminUsersPage.tsx";
 
 export const router = createBrowserRouter([
   {
@@ -18,7 +19,16 @@ export const router = createBrowserRouter([
       { index: true, element: <HomePage /> },
       { path: "about", element: <AboutPage /> },
       { path: "catalog", element: <CatalogPage /> },
-      { path: "admin", element: <AdminPage /> },
+      {
+        path: "admin",
+        element: <AdminPage />,
+        children: [
+          {
+            path: "users",
+            element: <AdminUsersPage />,
+          },
+        ],
+      },
       { path: "shoppingcart", element: <ShoppingCartPage /> },
       { path: "product/:productId", element: <ProductDetail /> },
     ],

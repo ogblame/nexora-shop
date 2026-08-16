@@ -1,3 +1,4 @@
+import { message } from "antd";
 import express from "express";
 import "dotenv/config";
 
@@ -91,6 +92,36 @@ app.delete("/api/products/:id", async (req, res) => {
   });
 
   res.json(product);
+});
+
+app.get("/api/users", async (req, res) => {
+  const users = await prisma.user.findMany({
+    select: {
+      id: true,
+      fullName: true,
+      email: true,
+      role: true,
+      createdAt: true,
+    },
+  });
+
+  res.json(users);
+});
+
+app.patch("/api/users/:id/role", async (req, res) => {
+  const id = Number(req.params.id);
+  const { role } = req.body;
+
+  const user = await prisma.user.update({
+    where: {
+      id,
+    },
+    data: {
+      role,
+    },
+  });
+  console.log(user);
+  res.json(user);
 });
 
 app.get("/", (request, response) => {

@@ -23,6 +23,7 @@ export default function HomePage() {
                 name={product.name}
                 price={product.price}
                 imageUrl={product.imageUrl}
+                product={product}
               />
             ))
           : "Товары не найдены =("}

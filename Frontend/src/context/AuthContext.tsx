@@ -39,7 +39,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
         localStorage.removeItem("token");
       }
       const data = await response.json();
-      console.log(data.user);
+
       setUser(data.user);
     };
     checkAuth();
