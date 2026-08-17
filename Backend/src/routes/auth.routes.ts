@@ -9,9 +9,6 @@ router.post("/register", async (req, res) => {
   const { fullName, email, password } = req.body;
   const passwordHash = await bcrypt.hash(password, 10);
 
-  console.log(prisma);
-  console.log(prisma.user);
-
   const isUser = await prisma.user.findUnique({
     where: { email },
   });
@@ -58,6 +55,7 @@ router.post("/login", async (req, res) => {
         process.env.JWT_SECRET!,
         { expiresIn: "1d" },
       );
+      console.log(token);
       return res.json({ token: token });
     } else {
       res.json({ message: "Неверный пароль!" });
@@ -67,7 +65,7 @@ router.post("/login", async (req, res) => {
 
 export default router;
 
-router.get("/me", (req, res) => {
+router.get("/me", async (req, res) => {
   const { authorization } = req.headers;
   const token = authorization?.split(" ")[1];
   try {
@@ -76,9 +74,22 @@ router.get("/me", (req, res) => {
         message: "Token not found",
       });
     }
-    const payload = jwt.verify(token, process.env.JWT_SECRET!);
+    const payload = jwt.verify(token, process.env.JWT_SECRET!) as {
+      id: number;
+    };
+
+    const user = await prisma.user.findUnique({
+      where: { id: payload.id },
+      select: {
+        id: true,
+        fullName: true,
+        email: true,
+        role: true,
+      },
+    });
+
     res.json({
-      user: payload,
+      user,
     });
   } catch (err) {
     console.log(err);

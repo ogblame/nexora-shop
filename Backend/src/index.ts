@@ -7,6 +7,7 @@ import authRouter from "./routes/auth.routes";
 import { prisma } from "./prisma.ts";
 import userRouter from "./routes/user.routes.ts";
 import { upload } from "./middleware/upload.ts";
+import { requireAdmin } from "./middleware/requireAdmin.ts";
 
 const app = express();
 app.use(express.json());
@@ -49,22 +50,27 @@ app.get("/api/products/:id", async (request, response) => {
   }
 });
 
-app.post("/api/products/", upload.single("image"), async (req, res) => {
-  const { name, price, description, quantity } = req.body;
-  console.log("FILE:", req.file);
-  const product = await prisma.product.create({
-    data: {
-      name,
-      price: Number(price),
-      description,
-      quantity: Number(quantity),
-      imageUrl: req.file ? `/uploads/${req.file.filename}` : null,
-    },
-  });
-  res.status(201).json(product);
-});
+app.post(
+  "/api/products/",
+  requireAdmin,
+  upload.single("image"),
+  async (req, res) => {
+    const { name, price, description, quantity } = req.body;
+    console.log("FILE:", req.file);
+    const product = await prisma.product.create({
+      data: {
+        name,
+        price: Number(price),
+        description,
+        quantity: Number(quantity),
+        imageUrl: req.file ? `/uploads/${req.file.filename}` : null,
+      },
+    });
+    res.status(201).json(product);
+  },
+);
 
-app.patch("/api/products/:id", async (req, res) => {
+app.patch("/api/products/:id", requireAdmin, async (req, res) => {
   const id = Number(req.params.id);
   const { name, price, description, quantity } = req.body;
 
@@ -82,7 +88,7 @@ app.patch("/api/products/:id", async (req, res) => {
   res.json(product);
 });
 
-app.delete("/api/products/:id", async (req, res) => {
+app.delete("/api/products/:id", requireAdmin, async (req, res) => {
   const id = Number(req.params.id);
 
   const product = await prisma.product.delete({
@@ -94,7 +100,7 @@ app.delete("/api/products/:id", async (req, res) => {
   res.json(product);
 });
 
-app.get("/api/users", async (req, res) => {
+app.get("/api/users", requireAdmin, async (req, res) => {
   const users = await prisma.user.findMany({
     select: {
       id: true,
@@ -108,7 +114,7 @@ app.get("/api/users", async (req, res) => {
   res.json(users);
 });
 
-app.patch("/api/users/:id/role", async (req, res) => {
+app.patch("/api/users/:id/role", requireAdmin, async (req, res) => {
   const id = Number(req.params.id);
   const { role } = req.body;
 

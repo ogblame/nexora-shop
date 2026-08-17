@@ -5,6 +5,7 @@ type AuthContextType = {
   setToken: React.Dispatch<React.SetStateAction<string | null>>;
   user: User | null;
   logout: () => void;
+  checkAuth: () => void;
 };
 
 type AuthProviderProps = {
@@ -26,22 +27,25 @@ export function AuthProvider({ children }: AuthProviderProps) {
   });
   const [user, setUser] = useState<User | null>(null);
 
+  const checkAuth = async () => {
+    const response = await fetch("http://localhost:3000/auth/me", {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    if (!response.ok) {
+      setToken(null);
+      localStorage.removeItem("token");
+    }
+
+    const data = await response.json();
+
+    setUser(data.user);
+  };
+
   useEffect(() => {
     if (!token) return;
-    const checkAuth = async () => {
-      const response = await fetch("http://localhost:3000/auth/me", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      if (!response.ok) {
-        setToken(null);
-        localStorage.removeItem("token");
-      }
-      const data = await response.json();
 
-      setUser(data.user);
-    };
     checkAuth();
   }, [token]);
 
@@ -51,7 +55,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     localStorage.removeItem("token");
   };
   return (
-    <AuthContext.Provider value={{ token, setToken, user, logout }}>
+    <AuthContext.Provider value={{ token, setToken, user, logout, checkAuth }}>
       {children}
     </AuthContext.Provider>
   );

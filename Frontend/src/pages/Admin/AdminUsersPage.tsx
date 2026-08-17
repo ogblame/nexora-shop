@@ -1,7 +1,8 @@
 import { Space, Table } from "antd";
 import Column from "antd/es/table/Column";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
+import { AuthContext } from "../../context/AuthContext";
 
 type User = {
   id: number;
@@ -13,29 +14,43 @@ type User = {
 
 export default function AdminUsersPage() {
   const [users, setUsers] = useState<User[]>([]);
-
+  const { checkAuth } = useContext(AuthContext);
+  const token = localStorage.getItem("token");
   useEffect(() => {
-    fetch("http://localhost:3000/api/users")
+    fetch("http://localhost:3000/api/users", {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
       .then((res) => res.json())
       .then((data) => setUsers(data));
   }, []);
 
   const handeleRoleChange = async (userId: number, role: string) => {
-    fetch(`http://localhost:3000/api/users/${userId}/role`, {
-      headers: {
-        "Content-Type": "application/json",
-      },
-      method: "PATCH",
-      body: JSON.stringify({ role }),
-    })
-      .then((res) => res.json())
-      .then((user) =>
-        setUsers((prev) =>
-          prev.map((item) => (item.id === user.id ? user : item)),
-        ),
-      );
+    try {
+      fetch(`http://localhost:3000/api/users/${userId}/role`, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        method: "PATCH",
+        body: JSON.stringify({ role }),
+      })
+        .then((res) => res.json())
+        .then((user) =>
+          setUsers((prev) =>
+            prev.map((item) => (item.id === user.id ? user : item)),
+          ),
+        );
+
+      checkAuth();
+    } catch (err) {
+      console.log(err);
+    }
   };
 
+  console.log("USERS:", users);
+  console.log(Array.isArray(users));
   return (
     <div>
       <Table className="products__list" dataSource={users}>

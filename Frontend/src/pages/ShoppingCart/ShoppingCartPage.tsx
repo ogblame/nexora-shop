@@ -2,12 +2,20 @@ import React from "react";
 import { useSelector } from "react-redux";
 import type { RootState } from "../../app/store";
 import CartItem from "../../features/cart/ui/CartItem";
-import { Button } from "antd";
+import { Button, message } from "antd";
 import { useNavigate } from "react-router-dom";
 
 export default function ShoppingCartPage() {
   const items = useSelector((state: RootState) => state.cart.items);
   const navigate = useNavigate();
+
+  const handleCheckout = () => {
+    if (items.length === 0) {
+      message.error("Добавьте товары для оформления заказа!");
+    } else {
+      navigate("checkout");
+    }
+  };
 
   return (
     <>
@@ -17,7 +25,7 @@ export default function ShoppingCartPage() {
           Продуктов в корзине:{" "}
           {items.reduce((acc, item) => acc + item.count, 0)} позиции.
         </h2>
-        <Button> Оформить заказ</Button>
+        <Button onClick={handleCheckout}> Оформить заказ</Button>
       </div>
 
       <div className="grid grid-cols-4 mt-10">

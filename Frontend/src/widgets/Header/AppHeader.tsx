@@ -19,7 +19,7 @@ export default function AppHeader() {
   const auth = useContext(AuthContext);
   const { user, logout } = auth;
   const navigate = useNavigate();
-  console.log(user.role);
+  console.log(user);
 
   const shoppingCartItems = useSelector((state: RootState) => state.cart.items);
 
@@ -79,7 +79,12 @@ export default function AppHeader() {
             </ul>
           </nav>
           <div className="header-actions flex items-center">
-            {/* {user.role === "ADMIN" && <Button>Админ панель</Button>} */}
+            {user?.role === "ADMIN" && (
+              <Button onClick={() => navigate("/admin")} type="primary">
+                Админ панель
+              </Button>
+            )}
+
             {!user ? (
               <Button
                 onClick={() => navigate("/login")}
