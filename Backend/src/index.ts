@@ -8,6 +8,7 @@ import { prisma } from "./prisma.ts";
 import userRouter from "./routes/user.routes.ts";
 import { upload } from "./middleware/upload.ts";
 import { requireAdmin } from "./middleware/requireAdmin.ts";
+import { requireAuth } from "./middleware/requireAuth.ts";
 
 const app = express();
 app.use(express.json());
@@ -132,6 +133,55 @@ app.patch("/api/users/:id/role", requireAdmin, async (req, res) => {
 
 app.get("/", (request, response) => {
   response.send("Backend работает");
+});
+
+app.get("/api/orders/my", requireAuth, async (req, res) => {
+  const userId = req.userId;
+
+  const orders = await prisma.order.findMany({
+    where: { userId },
+    include: {
+      items: {
+        include: {
+          product: true,
+        },
+      },
+    },
+  });
+
+  res.json({ orders });
+});
+
+app.post("/api/orders", requireAuth, async (req, res) => {
+  const userId = req.userId;
+
+  const { deliveryAddress, phone, totalPrice, items } = req.body;
+
+  if (!userId) {
+    return res.status(401).json({
+      message: "Unauthorized",
+    });
+  }
+  const order = await prisma.order.create({
+    data: {
+      userId,
+      phone,
+      deliveryAddress,
+      totalPrice,
+
+      items: {
+        create: items.map((item) => ({
+          productId: item.id,
+          count: item.count,
+          price: item.price,
+        })),
+      },
+    },
+    include: {
+      items: true,
+    },
+  });
+  return res.status(201).json(order);
 });
 
 app.listen(PORT);

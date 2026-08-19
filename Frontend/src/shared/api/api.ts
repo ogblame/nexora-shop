@@ -22,9 +22,10 @@ export const fetchAddProduct = async (
   formData.append("quantity", String(newProduct.quantity));
   formData.append("image", image);
 
-  console.log(image);
-
   const response = await fetch("http://localhost:3000/api/products", {
+    headers: {
+      Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MywiZW1haWwiOiJkaW1ha3V6bWludGNldkBnbWFpbC5jb20iLCJmdWxsTmFtZSI6ItCU0LzQuNGC0YDQuNC5INCa0YPQt9GM0LzQuNC90YbQtdCyIiwiaWF0IjoxNzg3MDczMjMzLCJleHAiOjE3ODcxNTk2MzN9.tvq8GDevauXtn8p1BVaLHKgmGVbyBibRPtQoxhWMCh8`,
+    },
     method: "POST",
     body: formData,
   });

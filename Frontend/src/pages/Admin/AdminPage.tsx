@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   Button,
   Flex,
@@ -27,6 +27,7 @@ import type {
   UpdateProduct,
 } from "../../entities/Product/model/types.ts";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
+import { AuthContext } from "../../context/AuthContext.tsx";
 
 type ProductFormValues = CreateProduct & {
   upload?: {
@@ -46,7 +47,6 @@ export default function AdminPage() {
   const [edditingProduct, setEdditingProduct] = useState<Product | null>(null);
   const location = useLocation();
   const navigate = useNavigate();
-  console.log(location);
 
   useEffect(() => {
     fetchProducts()
@@ -140,6 +140,16 @@ export default function AdminPage() {
         ) : (
           <Button type="primary" onClick={() => navigate("/admin/users")}>
             Cписок пользователей
+          </Button>
+        )}
+        {location.pathname === "/admin/orders" ? (
+          <Button onClick={() => navigate("/admin")}>
+            {" "}
+            Закрыть список заказов
+          </Button>
+        ) : (
+          <Button onClick={() => navigate("orders")} type="primary">
+            Список заказов
           </Button>
         )}
       </div>

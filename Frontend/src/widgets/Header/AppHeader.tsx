@@ -19,7 +19,6 @@ export default function AppHeader() {
   const auth = useContext(AuthContext);
   const { user, logout } = auth;
   const navigate = useNavigate();
-  console.log(user);
 
   const shoppingCartItems = useSelector((state: RootState) => state.cart.items);
 
@@ -37,6 +36,7 @@ export default function AppHeader() {
       label: "Профиль",
       icon: <ProfileOutlined />,
       extra: "⌘P",
+      onClick: () => navigate("/profile"),
     },
     {
       key: "3",

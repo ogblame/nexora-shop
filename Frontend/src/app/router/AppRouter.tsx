@@ -12,6 +12,8 @@ import ShoppingCartPage from "../../pages/ShoppingCart/ShoppingCartPage.tsx";
 import AdminUsersPage from "../../pages/Admin/AdminUsersPage.tsx";
 import ProtectedRoute from "./ProtectedRoute.tsx";
 import CheckoutPage from "../../pages/Checkout/CheckoutPage.tsx";
+import Profile from "../../pages/Profile/Profile.tsx";
+import AdminOrdersPage from "../../pages/Admin/AdminOrdersPage.tsx";
 
 export const router = createBrowserRouter([
   {
@@ -21,6 +23,7 @@ export const router = createBrowserRouter([
       { index: true, element: <HomePage /> },
       { path: "about", element: <AboutPage /> },
       { path: "catalog", element: <CatalogPage /> },
+      { path: "/profile", element: <Profile /> },
       {
         element: <ProtectedRoute />,
         children: [
@@ -31,6 +34,10 @@ export const router = createBrowserRouter([
               {
                 path: "users",
                 element: <AdminUsersPage />,
+              },
+              {
+                path: "orders",
+                element: <AdminOrdersPage />,
               },
             ],
           },
