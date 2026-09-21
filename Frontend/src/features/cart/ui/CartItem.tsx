@@ -15,7 +15,7 @@ export default function CartItem({ id, name, price, imageUrl }: Product) {
   return (
     <div className="w-[250px] overflow-hidden rounded-2xl bg-white shadow-md transition hover:-translate-y-1 hover:shadow-lg">
       <img
-        src={`http://localhost:3000${imageUrl}`}
+        src={imageUrl ?? undefined}
         alt={name}
         className="h-[220px] w-full object-cover"
       />

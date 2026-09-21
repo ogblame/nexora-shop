@@ -2,7 +2,6 @@ import "./ProductCard.css";
 import { useNavigate } from "react-router-dom";
 import { Button } from "antd";
 import type { Product } from "../Product/model/types";
-import mainPhoto from "../../../../backend/uploads/preview.jpg";
 import { ShoppingCartOutlined } from "@ant-design/icons";
 import { useDispatch } from "react-redux";
 import { addToCart } from "../../features/cart/model/cartSlice";
@@ -27,11 +26,13 @@ export default function ProductCard({
 
   return (
     <div className="w-[280px] overflow-hidden rounded-2xl bg-white shadow-md transition hover:-translate-y-1 hover:shadow-lg">
-      <img
-        src={!imageUrl ? mainPhoto : `http://localhost:3000${imageUrl}`}
-        alt={name}
-        className="h-[220px] w-full object-cover"
-      />
+      {imageUrl && (
+        <img
+          src={imageUrl}
+          alt={name}
+          className="h-[220px] w-full object-cover"
+        />
+      )}
 
       <div className="p-5">
         <h3 className="mb-2 text-lg font-semibold">{name}</h3>

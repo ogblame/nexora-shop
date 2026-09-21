@@ -15,7 +15,7 @@ export default function ProductDetail() {
     fetch(`/api/products/${productId}`)
       .then((res) => res.json())
       .then((data) => setProduct(data));
-  }, []);
+  }, [productId]);
 
   const prevStep = () => {
     navigate(-1);
@@ -34,7 +34,7 @@ export default function ProductDetail() {
         <div className="rounded-2xl bg-gray-100">
           <img
             className="h-[500px] w-full object-contain"
-            src={`http://localhost:3000${product.imageUrl}`}
+            src={product.imageUrl ?? undefined}
           />
         </div>
 

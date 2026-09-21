@@ -34,7 +34,7 @@ export default function LoginPage() {
       const data = await response.json();
 
       if (!data.token) {
-        message.error("Нет такого");
+        message.error("Нет токена");
         return;
       }
 
