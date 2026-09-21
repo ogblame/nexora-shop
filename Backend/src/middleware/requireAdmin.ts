@@ -45,7 +45,9 @@ export async function requireAdmin(
     }
 
     next();
-  } catch {
+  } catch (err) {
+    console.error("requireAdmin error:", err);
+
     return res.status(401).json({
       message: "Invalid token",
     });
