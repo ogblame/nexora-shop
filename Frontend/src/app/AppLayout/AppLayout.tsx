@@ -1,4 +1,3 @@
-import { Layout } from "antd";
 import { Outlet } from "react-router-dom";
 import AppHeader from "../../widgets/Header/AppHeader";
 import "../../shared/styles/global.css";

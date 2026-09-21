@@ -4,7 +4,7 @@ export type Product = {
   price: number;
   description: string;
   quantity: string;
-  imageUrl: string | null;
+  imageUrl?: string | null;
 };
 
 export type CreateProduct = Omit<Product, "id">;

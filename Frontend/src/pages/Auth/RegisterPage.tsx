@@ -1,8 +1,5 @@
 import type { FormProps } from "antd";
 import { Button, Checkbox, Form, Input, message } from "antd";
-import Password from "antd/es/input/Password";
-import { useContext } from "react";
-import { AuthContext } from "../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 
 type FieldType = {
@@ -20,7 +17,7 @@ export default function RegisterPage() {
   const navigate = useNavigate();
   const onFinish: FormProps<FieldType>["onFinish"] = async (values) => {
     try {
-      const response = await fetch("http://localhost:3000/auth/register", {
+      const response = await fetch("/auth/register", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -31,12 +28,15 @@ export default function RegisterPage() {
           fullName: values.fullName,
         }),
       });
+      if (!response.ok) {
+        throw new Error("Ошибка регистрации");
+      }
 
-      const data = await response.json();
       message.success("Пользователь успешно зарегистрирован");
       navigate("/login");
     } catch (err) {
-      message.error("Ошибка", err);
+      console.error(err);
+      message.error("Ошибка");
     }
   };
   return (
@@ -44,9 +44,6 @@ export default function RegisterPage() {
       <div className="w-full max-w-md rounded-2xl bg-white p-8 shadow-lg flex flex-col justify-center">
         <Form
           name="basic"
-          // labelCol={{ span: 8 }}
-          // wrapperCol={{ span: 16 }}
-          // style={{ maxWidth: 400 }}
           initialValues={{ remember: true }}
           onFinish={onFinish}
           onFinishFailed={onFinishFailed}

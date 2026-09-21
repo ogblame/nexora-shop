@@ -12,7 +12,7 @@ export default function ProductDetail() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    fetch(`http://localhost:3000/api/products/${productId}`)
+    fetch(`/api/products/${productId}`)
       .then((res) => res.json())
       .then((data) => setProduct(data));
   }, []);

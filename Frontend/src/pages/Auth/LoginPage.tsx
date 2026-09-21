@@ -1,8 +1,6 @@
 import type { FormProps } from "antd";
 import { Button, Checkbox, Form, Input, message } from "antd";
-import Password from "antd/es/input/Password";
-import { useContext } from "react";
-import { AuthContext } from "../../context/AuthContext";
+import { useAuth } from "../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 
 type FieldType = {
@@ -16,12 +14,11 @@ const onFinishFailed: FormProps<FieldType>["onFinishFailed"] = (errorInfo) => {
 };
 
 export default function LoginPage() {
-  const auth = useContext(AuthContext);
-  const { setToken } = auth;
+  const { setToken } = useAuth();
   const navigate = useNavigate();
   const onFinish: FormProps<FieldType>["onFinish"] = async (values) => {
     try {
-      const response = await fetch("http://localhost:3000/auth/login", {
+      const response = await fetch("/auth/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -35,9 +32,12 @@ export default function LoginPage() {
       if (!response.ok) throw new Error("Запрос неверный");
 
       const data = await response.json();
+
       if (!data.token) {
         message.error("Нет такого");
+        return;
       }
+
       localStorage.setItem("token", data.token);
       setToken(data.token);
       navigate("/");

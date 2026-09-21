@@ -1,19 +1,16 @@
-import React, { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Button,
   Flex,
   Form,
   Input,
-  Select,
   InputNumber,
   Space,
   Table,
-  Tag,
   message,
   Upload,
 } from "antd";
 import "./AdminPage.css";
-import type { UploadProps } from "antd";
 import { UploadOutlined } from "@ant-design/icons";
 import {
   fetchProducts,
@@ -27,7 +24,6 @@ import type {
   UpdateProduct,
 } from "../../entities/Product/model/types.ts";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
-import { AuthContext } from "../../context/AuthContext.tsx";
 
 type ProductFormValues = CreateProduct & {
   upload?: {
@@ -36,7 +32,7 @@ type ProductFormValues = CreateProduct & {
     }[];
   };
 };
-const { Column, ColumnGroup } = Table;
+const { Column } = Table;
 
 type formMode = "create" | "edit" | null;
 
@@ -60,6 +56,10 @@ export default function AdminPage() {
   }, []);
 
   const addProduct = async (values: CreateProduct, image?: File) => {
+    if (!image) {
+      message.error("Добавьте изображение товара");
+      return;
+    }
     try {
       const newProduct = await fetchAddProduct(values, image);
 

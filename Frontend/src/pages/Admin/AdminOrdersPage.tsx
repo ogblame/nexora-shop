@@ -1,15 +1,15 @@
 import { Button, Space, Table } from "antd";
 import Column from "antd/es/table/Column";
-import React, { useContext, useEffect, useState } from "react";
-import { AuthContext } from "../../context/AuthContext";
+import { useEffect, useState } from "react";
+import { useAuth } from "../../context/AuthContext";
 
 export default function AdminOrdersPage() {
   const [orders, setOrders] = useState([]);
-  const { user, token } = useContext(AuthContext);
+  const { token } = useAuth();
   useEffect(() => {
     const fetchOrders = async () => {
       try {
-        const response = await fetch("http://localhost:3000/api/orders/my", {
+        const response = await fetch("/api/orders/my", {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -22,7 +22,7 @@ export default function AdminOrdersPage() {
       }
     };
     fetchOrders();
-  }, []);
+  }, [token]);
 
   return (
     <div>
@@ -58,7 +58,7 @@ export default function AdminOrdersPage() {
         <Column
           title="Действия"
           key="action"
-          render={(_, record) => (
+          render={() => (
             <Space>
               <Button>Изменить статус</Button>
             </Space>

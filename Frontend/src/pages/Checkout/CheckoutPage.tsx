@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import type { RootState } from "../../app/store";
 import {
@@ -13,15 +13,20 @@ import {
   Spin,
   Typography,
 } from "antd";
-import { AuthContext } from "../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { clearCart } from "../../features/cart/model/cartSlice";
+import { useAuth } from "../../context/AuthContext";
+
+type CheckoutFormValues = {
+  phone?: string;
+  deliveryAddress?: string;
+};
 
 export default function CheckoutPage() {
   const items = useSelector((state: RootState) => state.cart.items);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { user, token } = useContext(AuthContext);
+  const { user, token } = useAuth();
   const itemsPrices = items.reduce((acc, item) => {
     const itemPrice = item.count * item.price;
     return acc + itemPrice;
@@ -29,7 +34,7 @@ export default function CheckoutPage() {
 
   const [isSuccess, setIsSuccess] = useState(false);
 
-  const onFinish = async (values) => {
+  const onFinish = async (values: CheckoutFormValues) => {
     const orderData = {
       phone: values.phone,
       deliveryAddress: values.deliveryAddress,
@@ -38,7 +43,7 @@ export default function CheckoutPage() {
     };
 
     try {
-      const response = await fetch("http://localhost:3000/api/orders", {
+      const response = await fetch("/api/orders", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -66,6 +71,10 @@ export default function CheckoutPage() {
       message.error(`Заказ не создан по причине: ${err}`);
     }
   };
+
+  if (!user) {
+    return null;
+  }
 
   if (isSuccess) {
     return (

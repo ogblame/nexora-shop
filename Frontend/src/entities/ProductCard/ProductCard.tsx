@@ -1,4 +1,3 @@
-import React from "react";
 import "./ProductCard.css";
 import { useNavigate } from "react-router-dom";
 import { Button } from "antd";
@@ -12,7 +11,7 @@ type ProductCardProps = {
   id: number;
   name: string;
   price: number;
-  imageUrl: string;
+  imageUrl?: string | null;
   product: Product;
 };
 

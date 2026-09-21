@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import ProductCard from "../../entities/ProductCard/ProductCard";
 import "./HomePage.css";
 import { fetchProducts } from "../../shared/api/api.js";
@@ -19,6 +19,7 @@ export default function HomePage() {
         {products.length !== 0
           ? products.map((product: Product) => (
               <ProductCard
+                key={product.id}
                 id={product.id}
                 name={product.name}
                 price={product.price}

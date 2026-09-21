@@ -1,4 +1,10 @@
-import { createContext, useEffect, useState, type ReactNode } from "react";
+import {
+  createContext,
+  useEffect,
+  useState,
+  useContext,
+  type ReactNode,
+} from "react";
 
 type AuthContextType = {
   token: string | null;
@@ -17,9 +23,21 @@ type User = {
   email: string;
   fullName: string;
   role: "USER" | "ADMIN";
+  phone: string | null;
+  deliveryAddress: string | null;
 };
 
 export const AuthContext = createContext<AuthContextType | null>(null);
+
+export function useAuth() {
+  const context = useContext(AuthContext);
+
+  if (!context) {
+    throw new Error("useAuth must be used inside AuthProvider");
+  }
+
+  return context;
+}
 
 export function AuthProvider({ children }: AuthProviderProps) {
   const [token, setToken] = useState<string | null>(() => {
@@ -28,7 +46,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const [user, setUser] = useState<User | null>(null);
 
   const checkAuth = async () => {
-    const response = await fetch("http://localhost:3000/auth/me", {
+    const response = await fetch("/auth/me", {
       headers: {
         Authorization: `Bearer ${token}`,
       },

@@ -1,9 +1,7 @@
 import "./Header.css";
 import CustomLink from "../../shared/UI/CustomLink.tsx";
-import { useContext } from "react";
-import { AuthContext } from "../../context/AuthContext.tsx";
+import { useAuth } from "../../context/AuthContext.tsx";
 import {
-  DownOutlined,
   LogoutOutlined,
   ProfileOutlined,
   SettingOutlined,
@@ -16,8 +14,7 @@ import { useSelector } from "react-redux";
 import type { RootState } from "../../app/store.ts";
 
 export default function AppHeader() {
-  const auth = useContext(AuthContext);
-  const { user, logout } = auth;
+  const { user, logout } = useAuth();
   const navigate = useNavigate();
 
   const shoppingCartItems = useSelector((state: RootState) => state.cart.items);

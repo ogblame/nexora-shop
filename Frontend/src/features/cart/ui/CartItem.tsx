@@ -1,19 +1,10 @@
-import React from "react";
-
-import { useNavigate } from "react-router-dom";
 import { Button } from "antd";
 import type { Product } from "../../../entities/Product/model/types";
 import { useDispatch, useSelector } from "react-redux";
 import type { RootState } from "../../../app/store.ts";
 import { deleteCart } from "../model/cartSlice.ts";
 
-export default function CartItem({
-  id,
-  name,
-  price,
-  imageUrl,
-  quantity,
-}: Partial<Product>) {
+export default function CartItem({ id, name, price, imageUrl }: Product) {
   const items = useSelector((state: RootState) => state.cart.items);
   const cartItem = items.find((item) => item.id === id);
   const dispatch = useDispatch();

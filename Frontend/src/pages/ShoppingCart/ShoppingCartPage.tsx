@@ -1,4 +1,3 @@
-import React from "react";
 import { useSelector } from "react-redux";
 import type { RootState } from "../../app/store";
 import CartItem from "../../features/cart/ui/CartItem";
@@ -31,11 +30,13 @@ export default function ShoppingCartPage() {
       <div className="grid grid-cols-4 mt-10">
         {items.map((item) => (
           <CartItem
+            key={item.id}
             id={item.id}
             price={item.price}
             imageUrl={item.imageUrl}
             name={item.name}
             quantity={item.quantity}
+            description={item.description}
           />
         ))}
       </div>

@@ -1,23 +1,39 @@
-import { Card, Descriptions, Divider, Form, List, Tag, Typography } from "antd";
-import React, { useContext, useEffect, useState } from "react";
-import { AuthContext } from "../../context/AuthContext";
+import { Card, Descriptions, Divider, List, Tag, Typography } from "antd";
+import { useEffect, useState } from "react";
+import { useAuth } from "../../context/AuthContext";
 
-type Order = {};
+type OrderItem = {
+  id: number;
+  count: number;
+  price: number;
+  product: {
+    name: string;
+  };
+};
+
+type Order = {
+  id: number;
+  status: string;
+  createdAt: string;
+  deliveryAddress: string;
+  totalPrice: number;
+  items: OrderItem[];
+};
 
 export default function Profile() {
-  const [orders, setOrders] = useState([]);
-  const { user, token } = useContext(AuthContext);
+  const [orders, setOrders] = useState<Order[]>([]);
+  const { user, token } = useAuth();
 
   useEffect(() => {
     const fetchOrders = async () => {
       try {
-        const response = await fetch("http://localhost:3000/api/orders/my", {
+        const response = await fetch("/api/orders/my", {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         });
         const dataOrders = await response.json();
-        console.log(dataOrders);
+
         setOrders(dataOrders.orders);
       } catch (err) {
         console.log(err);

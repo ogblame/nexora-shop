@@ -4,7 +4,7 @@ import type {
 } from "../../entities/Product/model/types.ts";
 
 export const fetchProducts = async () => {
-  const response = await fetch("http://localhost:3000/api/products");
+  const response = await fetch("/api/products");
   const dataProducts = await response.json();
 
   return dataProducts;
@@ -22,7 +22,7 @@ export const fetchAddProduct = async (
   formData.append("quantity", String(newProduct.quantity));
   formData.append("image", image);
 
-  const response = await fetch("http://localhost:3000/api/products", {
+  const response = await fetch("/api/products", {
     headers: {
       Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MywiZW1haWwiOiJkaW1ha3V6bWludGNldkBnbWFpbC5jb20iLCJmdWxsTmFtZSI6ItCU0LzQuNGC0YDQuNC5INCa0YPQt9GM0LzQuNC90YbQtdCyIiwiaWF0IjoxNzg3MDczMjMzLCJleHAiOjE3ODcxNTk2MzN9.tvq8GDevauXtn8p1BVaLHKgmGVbyBibRPtQoxhWMCh8`,
     },
@@ -41,30 +41,24 @@ export const fetchUpdatedProduct = async (
   productId: number,
   updatedProduct: UpdateProduct,
 ) => {
-  const response = await fetch(
-    `http://localhost:3000/api/products/${productId}`,
-    {
-      headers: {
-        "Content-Type": "application/json",
-      },
-      method: "PATCH",
-      body: JSON.stringify(updatedProduct),
+  const response = await fetch(`/api/products/${productId}`, {
+    headers: {
+      "Content-Type": "application/json",
     },
-  );
+    method: "PATCH",
+    body: JSON.stringify(updatedProduct),
+  });
 
   return await response.json();
 };
 
 export const fetchDeleteProduct = async (productId: number) => {
-  const response = await fetch(
-    `http://localhost:3000/api/products/${productId}`,
-    {
-      headers: {
-        "Content-Type": "application/json",
-      },
-      method: "DELETE",
+  const response = await fetch(`/api/products/${productId}`, {
+    headers: {
+      "Content-Type": "application/json",
     },
-  );
+    method: "DELETE",
+  });
 
   return await response.json();
 };

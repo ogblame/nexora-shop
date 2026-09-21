@@ -1,7 +1,17 @@
-import React from "react";
+import type { ReactNode } from "react";
 import { Link, useMatch } from "react-router-dom";
 
-export default function CustomLink({ children, to, ...props }) {
+type CustomLinkProps = {
+  children: ReactNode;
+  to: string;
+  className?: string;
+};
+
+export default function CustomLink({
+  children,
+  to,
+  ...props
+}: CustomLinkProps) {
   const match = useMatch(to);
 
   return (

@@ -1,8 +1,7 @@
 import { Space, Table } from "antd";
 import Column from "antd/es/table/Column";
-import React, { useContext, useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
-import { AuthContext } from "../../context/AuthContext";
+import { useEffect, useState } from "react";
+import { useAuth } from "../../context/AuthContext";
 
 type User = {
   id: number;
@@ -14,10 +13,10 @@ type User = {
 
 export default function AdminUsersPage() {
   const [users, setUsers] = useState<User[]>([]);
-  const { checkAuth } = useContext(AuthContext);
+  const { checkAuth } = useAuth();
   const token = localStorage.getItem("token");
   useEffect(() => {
-    fetch("http://localhost:3000/api/users", {
+    fetch("/api/users", {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -28,7 +27,7 @@ export default function AdminUsersPage() {
 
   const handeleRoleChange = async (userId: number, role: string) => {
     try {
-      fetch(`http://localhost:3000/api/users/${userId}/role`, {
+      fetch(`/api/users/${userId}/role`, {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
