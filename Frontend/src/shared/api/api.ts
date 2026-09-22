@@ -13,6 +13,7 @@ export const fetchProducts = async () => {
 export const fetchAddProduct = async (
   newProduct: CreateProduct,
   image: File,
+  token: string,
 ) => {
   const formData = new FormData();
 
@@ -24,7 +25,7 @@ export const fetchAddProduct = async (
 
   const response = await fetch("/api/products", {
     headers: {
-      Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MywiZW1haWwiOiJkaW1ha3V6bWludGNldkBnbWFpbC5jb20iLCJmdWxsTmFtZSI6ItCU0LzQuNGC0YDQuNC5INCa0YPQt9GM0LzQuNC90YbQtdCyIiwiaWF0IjoxNzg3MDczMjMzLCJleHAiOjE3ODcxNTk2MzN9.tvq8GDevauXtn8p1BVaLHKgmGVbyBibRPtQoxhWMCh8`,
+      Authorization: `Bearer ${token}`,
     },
     method: "POST",
     body: formData,

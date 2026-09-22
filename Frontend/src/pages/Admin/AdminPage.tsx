@@ -24,6 +24,7 @@ import type {
   UpdateProduct,
 } from "../../entities/Product/model/types.ts";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext.tsx";
 
 type ProductFormValues = CreateProduct & {
   upload?: {
@@ -43,6 +44,7 @@ export default function AdminPage() {
   const [edditingProduct, setEdditingProduct] = useState<Product | null>(null);
   const location = useLocation();
   const navigate = useNavigate();
+  const { token } = useAuth();
 
   useEffect(() => {
     fetchProducts()
@@ -60,8 +62,14 @@ export default function AdminPage() {
       message.error("Добавьте изображение товара");
       return;
     }
+
+    if (!token) {
+      message.error("Вы не авторизованы");
+      return;
+    }
+
     try {
-      const newProduct = await fetchAddProduct(values, image);
+      const newProduct = await fetchAddProduct(values, image, token);
 
       setProducts((prev) => [...prev, newProduct]);
 
