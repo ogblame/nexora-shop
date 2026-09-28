@@ -127,7 +127,7 @@ app.patch("/api/users/:id/role", requireAdmin, async (req, res) => {
       role,
     },
   });
-  console.log(user);
+
   res.json(user);
 });
 
@@ -155,32 +155,75 @@ app.get("/api/orders/my", requireAuth, async (req, res) => {
 app.post("/api/orders", requireAuth, async (req, res) => {
   const userId = req.userId;
 
-  const { deliveryAddress, phone, totalPrice, items } = req.body;
-
   if (!userId) {
     return res.status(401).json({
       message: "Unauthorized",
     });
   }
+
+  const { deliveryAddress, phone, items } = req.body;
+
+  if (
+    !Array.isArray(items) ||
+    items.length === 0 ||
+    items.some(
+      (item) =>
+        !Number.isInteger(item.id) ||
+        !Number.isInteger(item.count) ||
+        item.count <= 0,
+    )
+  ) {
+    return res.status(400).json({
+      message: "Invalid order items",
+    });
+  }
+
+  const products = await prisma.product.findMany({
+    where: {
+      id: {
+        in: items.map((item) => item.id),
+      },
+    },
+  });
+
+  const productMap = new Map(products.map((product) => [product.id, product]));
+
+  if (items.some((item) => !productMap.has(item.id))) {
+    return res.status(400).json({
+      message: "Product not found",
+    });
+  }
+
+  const orderItems = items.map((item) => {
+    const product = productMap.get(item.id)!;
+
+    return {
+      productId: product.id,
+      count: item.count,
+      price: product.price,
+    };
+  });
+
+  const totalPrice = orderItems.reduce(
+    (total, item) => total + item.price * item.count,
+    0,
+  );
+
   const order = await prisma.order.create({
     data: {
       userId,
       phone,
       deliveryAddress,
       totalPrice,
-
       items: {
-        create: items.map((item) => ({
-          productId: item.id,
-          count: item.count,
-          price: item.price,
-        })),
+        create: orderItems,
       },
     },
     include: {
       items: true,
     },
   });
+
   return res.status(201).json(order);
 });
 
